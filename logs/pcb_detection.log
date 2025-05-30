@@ -1,0 +1,124 @@
+2025-05-28 18:36:04,946 INFO: PCB Detection API startup [in C:\Users\mouad\Desktop\Flask_PCB\app.py:49]
+2025-05-28 18:36:05,331 INFO: Model loaded successfully [in C:\Users\mouad\Desktop\Flask_PCB\app.py:61]
+2025-05-28 17:43:14,585 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 17:43:14,585 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 17:43:14,585 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 17:43:14,585 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 17:43:17,243 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 17:43:17,252 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 17:43:17,258 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 17:43:17,266 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 17:47:47,460 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 17:47:47,460 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 17:47:47,460 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 17:47:47,461 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 17:47:49,418 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 17:47:49,424 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 17:47:49,428 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 17:47:49,438 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 21:58:50,436 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 21:58:50,436 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 21:58:50,436 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 21:58:50,436 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-28 21:58:53,913 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 21:58:53,923 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 21:58:53,930 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-28 21:58:53,958 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-29 21:38:47,248 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 21:38:47,248 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 21:38:47,249 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 21:38:47,249 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 21:38:52,392 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-29 21:38:52,394 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-29 21:38:52,397 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-29 21:38:52,403 INFO: Model loaded successfully [in /app/app.py:61]
+2025-05-29 22:09:48,974 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 22:09:48,975 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 22:09:48,974 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 22:09:48,982 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 22:09:51,035 ERROR: Database initialization error: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "pg_class_relname_nsp_index"
+DETAIL:  Key (relname, relnamespace)=(detections_id_seq, 20590) already exists.
+
+[SQL: 
+CREATE TABLE detections (
+	id SERIAL NOT NULL, 
+	timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	original_image_path VARCHAR(255) NOT NULL, 
+	result_image_path VARCHAR(255), 
+	image_width INTEGER, 
+	image_height INTEGER, 
+	defects_found BOOLEAN, 
+	total_defects INTEGER, 
+	processing_time FLOAT, 
+	predictions_json TEXT, 
+	client_ip VARCHAR(45), 
+	user_agent VARCHAR(255), 
+	PRIMARY KEY (id)
+)
+
+]
+(Background on this error at: https://sqlalche.me/e/20/gkpj) [in /app/app.py:84]
+2025-05-29 22:09:51,036 ERROR: Database initialization error: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "pg_class_relname_nsp_index"
+DETAIL:  Key (relname, relnamespace)=(detections_id_seq, 20590) already exists.
+
+[SQL: 
+CREATE TABLE detections (
+	id SERIAL NOT NULL, 
+	timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	original_image_path VARCHAR(255) NOT NULL, 
+	result_image_path VARCHAR(255), 
+	image_width INTEGER, 
+	image_height INTEGER, 
+	defects_found BOOLEAN, 
+	total_defects INTEGER, 
+	processing_time FLOAT, 
+	predictions_json TEXT, 
+	client_ip VARCHAR(45), 
+	user_agent VARCHAR(255), 
+	PRIMARY KEY (id)
+)
+
+]
+(Background on this error at: https://sqlalche.me/e/20/gkpj) [in /app/app.py:84]
+2025-05-29 22:09:51,042 ERROR: Database initialization error: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "pg_class_relname_nsp_index"
+DETAIL:  Key (relname, relnamespace)=(detections_id_seq, 20590) already exists.
+
+[SQL: 
+CREATE TABLE detections (
+	id SERIAL NOT NULL, 
+	timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	original_image_path VARCHAR(255) NOT NULL, 
+	result_image_path VARCHAR(255), 
+	image_width INTEGER, 
+	image_height INTEGER, 
+	defects_found BOOLEAN, 
+	total_defects INTEGER, 
+	processing_time FLOAT, 
+	predictions_json TEXT, 
+	client_ip VARCHAR(45), 
+	user_agent VARCHAR(255), 
+	PRIMARY KEY (id)
+)
+
+]
+(Background on this error at: https://sqlalche.me/e/20/gkpj) [in /app/app.py:84]
+2025-05-29 22:09:52,055 INFO: Database initialized successfully [in /app/app.py:82]
+2025-05-29 22:09:54,128 INFO: Model loaded successfully [in /app/app.py:90]
+2025-05-29 22:09:54,130 INFO: Model loaded successfully [in /app/app.py:90]
+2025-05-29 22:09:54,140 INFO: Model loaded successfully [in /app/app.py:90]
+2025-05-29 22:09:54,143 INFO: Model loaded successfully [in /app/app.py:90]
+2025-05-29 22:09:56,466 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 22:09:58,457 INFO: Database initialized successfully [in /app/app.py:82]
+2025-05-29 22:09:58,754 INFO: Model loaded successfully [in /app/app.py:90]
+2025-05-29 22:10:18,227 INFO: PCB Detection API startup [in /app/app.py:49]
+2025-05-29 22:10:20,266 INFO: Database initialized successfully [in /app/app.py:82]
+2025-05-29 22:10:20,590 INFO: Model loaded successfully [in /app/app.py:90]
+2025-05-30 10:03:36,265 INFO: PCB Detection API startup [in C:\Users\mouad\Desktop\Flask_PCB\app.py:49]
+2025-05-30 10:03:38,402 INFO: Database initialized successfully [in C:\Users\mouad\Desktop\Flask_PCB\app.py:82]
+2025-05-30 10:03:38,793 INFO: Model loaded successfully [in C:\Users\mouad\Desktop\Flask_PCB\app.py:90]
+2025-05-30 10:03:53,668 INFO: PCB Detection API startup [in C:\Users\mouad\Desktop\Flask_PCB\app.py:49]
+2025-05-30 10:03:55,754 INFO: Database initialized successfully [in C:\Users\mouad\Desktop\Flask_PCB\app.py:82]
+2025-05-30 10:03:55,979 INFO: Model loaded successfully [in C:\Users\mouad\Desktop\Flask_PCB\app.py:90]
+2025-05-30 10:04:23,166 INFO: PCB Detection API startup [in C:\Users\mouad\Desktop\Flask_PCB\app.py:49]
+2025-05-30 10:04:25,328 INFO: Database initialized successfully [in C:\Users\mouad\Desktop\Flask_PCB\app.py:82]
+2025-05-30 10:04:25,506 INFO: Model loaded successfully [in C:\Users\mouad\Desktop\Flask_PCB\app.py:90]
