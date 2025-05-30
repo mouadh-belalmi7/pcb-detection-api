@@ -17,6 +17,9 @@ from utils.model_utils import (
     draw_defect_boxes, print_model_details
 )
 
+# For Render deployment
+port = int(os.environ.get('PORT', 5000))
+
 # Initialize Flask app
 app = Flask(__name__)
 
