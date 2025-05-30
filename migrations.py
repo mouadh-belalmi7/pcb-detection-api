@@ -24,4 +24,5 @@ if __name__ == '__main__':
                 upgrade()
                 print("Applied migrations")
         else:
+
             print("Usage: python migrations.py [init|migrate|upgrade]")
