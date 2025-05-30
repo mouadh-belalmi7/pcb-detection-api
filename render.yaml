@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: pcb-detection-api
+    env: docker
+    plan: free
+    buildCommand: docker build -t pcb-api .
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 wsgi:app
+    envVars:
+      - key: DATABASE_HOST
+        value: 52.178.110.198
+      - key: DATABASE_USER
+        value: guest
+      - key: DATABASE_PASSWORD
+        value: Gue5t_P0stgr3s!_2025
+      - key: DATABASE_NAME
+        value: guest
+      - key: SECRET_KEY
+        generateValue: true
