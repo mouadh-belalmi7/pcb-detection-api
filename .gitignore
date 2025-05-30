@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 __pycache__/
 *.py[cod]
@@ -33,4 +34,41 @@ static/uploads/*
 
 # Docker (not needed for Render)
 docker-compose.yml
+=======
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+logs/*.log
+static/uploads/*
+!static/uploads/.gitkeep
+*.db
+*.sqlite3
+
+# Docker (not needed for Render)
+docker-compose.yml
+>>>>>>> 518cca968ba8bfdd0ffde9866e726a735025351d
 nginx/
