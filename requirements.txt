@@ -9,3 +9,4 @@ psycopg2-binary>=2.9.0
 SQLAlchemy>=2.0.0
 flask-sqlalchemy>=3.0.0
 flask-migrate>=4.0.0
+gevent>=21.0.0
