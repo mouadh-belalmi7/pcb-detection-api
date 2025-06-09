@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -29,17 +30,17 @@ app = Flask(__name__)
 
 # Simple configuration for Render
 class SimpleConfig:
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key')
-    UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'static/uploads')
+    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
+    UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER", "static/uploads")
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-    MODEL_PATH = os.environ.get('MODEL_PATH', 'models/model.tflite')
-    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', '*').split(',')
+    ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
+    MODEL_PATH = os.environ.get("MODEL_PATH", "models/model.tflite")
+    CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*").split(",")
 
 # Load configuration
 if USE_DATABASE:
-    env = os.environ.get('FLASK_ENV', 'development')
-    if env == 'production':
+    env = os.environ.get("FLASK_ENV", "development")
+    if env == "production":
         app.config.from_object(ProductionConfig)
     else:
         app.config.from_object(Config)
@@ -47,7 +48,7 @@ else:
     app.config.from_object(SimpleConfig)
 
 # Initialize CORS
-CORS(app, origins=app.config.get('CORS_ORIGINS', ['*']))
+CORS(app, origins=app.config.get("CORS_ORIGINS", ["*"]))
 
 # Initialize database if available
 if USE_DATABASE:
@@ -59,22 +60,22 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
 # Configure logging
 if not app.debug:
-    if not os.path.exists('logs'):
-        os.mkdir('logs')
-    file_handler = RotatingFileHandler('logs/pcb_detection.log', maxBytes=10240000, backupCount=10)
+    if not os.path.exists("logs"):
+        os.mkdir("logs")
+    file_handler = RotatingFileHandler("logs/pcb_detection.log", maxBytes=10240000, backupCount=10)
     file_handler.setFormatter(logging.Formatter(
-        '%(asctime)s %(levelname)s: %(message)s'
+        "%(asctime)s %(levelname)s: %(message)s"
     ))
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.INFO)
-    app.logger.info('PCB Detection API startup')
+    app.logger.info("PCB Detection API startup")
 
 # Create upload folder
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 # Model configuration
-CLASSES = ['mouse_bite', 'spur', 'open_circuit', 'short', 'missing_hole', 'spurious_copper']
+CLASSES = ["mouse_bite", "spur", "open_circuit", "short", "missing_hole", "spurious_copper"]
 model = None
 model_loaded = False
 
@@ -83,20 +84,20 @@ def load_model_lazy():
     global model, model_loaded
     if not model_loaded:
         try:
-            model_path = app.config.get('MODEL_PATH', 'models/model.tflite')
+            model_path = app.config.get("MODEL_PATH", "models/model.tflite")
             if os.path.exists(model_path):
-                app.logger.info(f'Loading model from {model_path}...')
+                app.logger.info(f"Loading model from {model_path}...")
                 model = load_tflite_model(model_path)
                 model_loaded = True
-                app.logger.info('Model loaded successfully')
+                app.logger.info("Model loaded successfully")
                 try:
                     print_model_details(model)
                 except Exception as e:
-                    app.logger.warning(f'Could not print model details: {e}')
+                    app.logger.warning(f"Could not print model details: {e}")
             else:
-                app.logger.error(f'Model file not found at {model_path}')
+                app.logger.error(f"Model file not found at {model_path}")
         except Exception as e:
-            app.logger.error(f'Failed to load model: {str(e)}')
+            app.logger.error(f"Failed to load model: {str(e)}")
             import traceback
             app.logger.error(traceback.format_exc())
     return model
@@ -106,14 +107,14 @@ if USE_DATABASE:
     with app.app_context():
         try:
             db.create_all()
-            app.logger.info('Database tables created')
+            app.logger.info("Database tables created")
         except Exception as e:
-            app.logger.error(f'Database initialization error: {str(e)}')
+            app.logger.error(f"Database initialization error: {str(e)}")
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
 
-@app.route('/')
+@app.route("/")
 def index():
     """Root endpoint"""
     return jsonify({
@@ -127,7 +128,7 @@ def index():
         }
     })
 
-@app.route('/health', methods=['GET'])
+@app.route("/health", methods=["GET"])
 def health_check():
     """Health check endpoint"""
     health_data = {
@@ -142,14 +143,14 @@ def health_check():
     
     if USE_DATABASE:
         try:
-            db.session.execute(db.text('SELECT 1'))
+            db.session.execute(db.text("SELECT 1"))
             health_data["database_status"] = "connected"
         except Exception as e:
             health_data["database_status"] = f"error: {str(e)}"
     
     return jsonify(health_data)
 
-@app.route('/detect', methods=['POST'])
+@app.route("/detect", methods=["POST"])
 def detect():
     """Main detection endpoint"""
     start_time = time.time()
@@ -157,25 +158,25 @@ def detect():
     # Load model on first request
     current_model = load_model_lazy()
     if not current_model:
-        return jsonify({'error': 'Model not available. Please check server logs.'}), 503
+        return jsonify({"error": "Model not available. Please check server logs."}), 503
     
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image provided'}), 400
+    if "image" not in request.files:
+        return jsonify({"error": "No image provided"}), 400
     
-    file = request.files['image']
-    if file.filename == '':
-        return jsonify({'error': 'No image selected'}), 400
+    file = request.files["image"]
+    if file.filename == "":
+        return jsonify({"error": "No image selected"}), 400
     
     if not allowed_file(file.filename):
-        return jsonify({'error': 'Invalid file type. Allowed types: jpg, jpeg, png'}), 400
+        return jsonify({"error": "Invalid file type. Allowed types: jpg, jpeg, png"}), 400
     
     try:
         # Save uploaded file
         extension = os.path.splitext(file.filename)[1]
         filename = str(uuid.uuid4()) + extension
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(filepath)
-        app.logger.info(f'Saved uploaded file: {filename}')
+        app.logger.info(f"Saved uploaded file: {filename}")
         
         # Get image dimensions
         img_width, img_height = None, None
@@ -184,7 +185,7 @@ def detect():
             with Image.open(filepath) as img:
                 img_width, img_height = img.size
         except Exception as e:
-            app.logger.warning(f'Could not get image dimensions: {e}')
+            app.logger.warning(f"Could not get image dimensions: {e}")
         
         # Process image
         processed_image = process_image(filepath)
@@ -192,14 +193,14 @@ def detect():
         
         # Draw bounding boxes if defects found
         result_image_url = None
-        if results.get('defects_found') and results.get('predictions'):
+        if results.get("defects_found") and results.get("predictions"):
             result_filename = f"result_{filename}"
-            result_filepath = os.path.join(app.config['UPLOAD_FOLDER'], result_filename)
-            result_image_path = draw_defect_boxes(filepath, results['predictions'], result_filepath)
+            result_filepath = os.path.join(app.config["UPLOAD_FOLDER"], result_filename)
+            result_image_path = draw_defect_boxes(filepath, results["predictions"], result_filepath)
             
             if result_image_path:
                 result_image_url = f"/uploads/{result_filename}"
-                results['result_image'] = result_filename
+                results["result_image"] = result_filename
         
         # Calculate processing time
         processing_time = time.time() - start_time
@@ -211,67 +212,67 @@ def detect():
                 detection = Detection(
                     original_image_path=f"/uploads/{filename}",
                     result_image_path=result_image_url,
-                    defects_found=results.get('defects_found', False),
-                    total_defects=len(results.get('predictions', [])),
+                    defects_found=results.get("defects_found", False),
+                    total_defects=len(results.get("predictions", [])),
                     image_width=img_width,
                     image_height=img_height,
                     processing_time=processing_time,
                     client_ip=request.remote_addr,
-                    user_agent=str(request.headers.get('User-Agent', ''))[:255]
+                    user_agent=str(request.headers.get("User-Agent", ""))[:255]
                 )
-                detection.predictions = results.get('predictions', [])
+                detection.predictions = results.get("predictions", [])
                 
                 db.session.add(detection)
                 db.session.commit()
                 detection_id = detection.id
-                app.logger.info(f'Saved detection to database with ID: {detection_id}')
+                app.logger.info(f"Saved detection to database with ID: {detection_id}")
             except Exception as e:
-                app.logger.error(f'Database save error: {e}')
+                app.logger.error(f"Database save error: {e}")
                 db.session.rollback()
         
         # Build response
         response = {
-            'success': True,
-            'timestamp': datetime.utcnow().isoformat(),
-            'processing_time': round(processing_time, 3),
-            'image_url': f"/uploads/{filename}",
-            'defects': results
+            "success": True,
+            "timestamp": datetime.utcnow().isoformat(),
+            "processing_time": round(processing_time, 3),
+            "image_url": f"/uploads/{filename}",
+            "defects": results
         }
         
         if detection_id:
-            response['detection_id'] = detection_id
+            response["detection_id"] = detection_id
         
         if result_image_url:
-            response['result_image_url'] = result_image_url
+            response["result_image_url"] = result_image_url
         
-        app.logger.info(f'Detection completed in {processing_time:.3f}s')
+        app.logger.info(f"Detection completed in {processing_time:.3f}s")
         return jsonify(response)
         
     except Exception as e:
-        app.logger.error(f'Detection error: {str(e)}', exc_info=True)
+        app.logger.error(f"Detection error: {str(e)}", exc_info=True)
         return jsonify({
-            'error': 'An error occurred during processing',
-            'message': str(e) if app.debug else 'Internal server error'
+            "error": "An error occurred during processing",
+            "message": str(e) if app.debug else "Internal server error"
         }), 500
 
-@app.route('/uploads/<path:filename>')
+@app.route("/uploads/<path:filename>")
 def serve_upload(filename):
     """Serve uploaded files"""
     try:
         filename = secure_filename(filename)
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+        return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
     except Exception as e:
-        app.logger.error(f'File not found: {filename}')
-        return jsonify({'error': 'File not found'}), 404
+        app.logger.error(f"File not found: {filename}")
+        return jsonify({"error": "File not found"}), 404
 
 # Database endpoints (only if database is enabled)
 if USE_DATABASE:
-    @app.route('/history', methods=['GET'])
+    @app.route("/history", methods=["GET"])
     def get_history():
         """Get detection history with pagination"""
         try:
-            page = request.args.get('page', 1, type=int)
-            per_page = request.args.get('per_page', 20, type=int)
+            page = request.args.get("page", 1, type=int)
+            per_page = request.args.get("per_page", 20, type=int)
             
             pagination = Detection.query.order_by(
                 Detection.timestamp.desc()
@@ -282,18 +283,18 @@ if USE_DATABASE:
             )
             
             return jsonify({
-                'success': True,
-                'detections': [d.to_dict() for d in pagination.items],
-                'total': pagination.total,
-                'page': page,
-                'per_page': per_page,
-                'total_pages': pagination.pages
+                "success": True,
+                "detections": [d.to_dict() for d in pagination.items],
+                "total": pagination.total,
+                "page": page,
+                "per_page": per_page,
+                "total_pages": pagination.pages
             })
         except Exception as e:
-            app.logger.error(f'History error: {str(e)}')
-            return jsonify({'error': 'Failed to fetch history'}), 500
+            app.logger.error(f"History error: {str(e)}")
+            return jsonify({"error": "Failed to fetch history"}), 500
 
-    @app.route('/statistics', methods=['GET'])
+    @app.route("/statistics", methods=["GET"])
     def get_statistics():
         """Get detection statistics"""
         try:
@@ -301,17 +302,19 @@ if USE_DATABASE:
             total_with_defects = Detection.query.filter_by(defects_found=True).count()
             
             return jsonify({
-                'success': True,
-                'statistics': {
-                    'total_detections': total_detections,
-                    'detections_with_defects': total_with_defects,
-                    'detection_rate': round(total_with_defects / total_detections * 100, 2) if total_detections > 0 else 0
+                "success": True,
+                "statistics": {
+                    "total_detections": total_detections,
+                    "detections_with_defects": total_with_defects,
+                    "detection_rate": round(total_with_defects / total_detections * 100, 2) if total_detections > 0 else 0
                 }
             })
         except Exception as e:
-            app.logger.error(f'Statistics error: {str(e)}')
-            return jsonify({'error': 'Failed to fetch statistics'}), 500
+            app.logger.error(f"Statistics error: {str(e)}")
+            return jsonify({"error": "Failed to fetch statistics"}), 500
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(debug=False, host='0.0.0.0', port=port)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host="0.0.0.0", port=port)
+
+
