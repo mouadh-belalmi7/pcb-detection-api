@@ -85,6 +85,28 @@ def load_model_lazy():
     if not model_loaded:
         try:
             model_path = app.config.get("MODEL_PATH", "models/model.tflite")
+            
+            # Debug: Check if file exists and get file info
+            app.logger.info(f"Looking for model at: {model_path}")
+            app.logger.info(f"Current working directory: {os.getcwd()}")
+            app.logger.info(f"Files in current directory: {os.listdir('.')}")
+            
+            if os.path.exists("models"):
+                app.logger.info(f"Files in models directory: {os.listdir('models')}")
+                # Check file size
+                if os.path.exists(model_path):
+                    file_size = os.path.getsize(model_path)
+                    app.logger.info(f"Model file exists, size: {file_size} bytes")
+                    if file_size < 1000:  # If file is too small, it might be a Git LFS pointer
+                        app.logger.error(f"Model file seems too small ({file_size} bytes). This might be a Git LFS pointer file.")
+                        with open(model_path, 'r') as f:
+                            content = f.read(200)  # Read first 200 characters
+                            app.logger.error(f"File content preview: {content}")
+                else:
+                    app.logger.error(f"Model file not found at {model_path}")
+            else:
+                app.logger.error("models directory does not exist")
+            
             if os.path.exists(model_path):
                 app.logger.info(f"Loading model from {model_path}...")
                 model = load_tflite_model(model_path)
