@@ -8,6 +8,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the models directory
+COPY models/ models/
+
 # Copy the rest of your application files into the container
 COPY . .
 
