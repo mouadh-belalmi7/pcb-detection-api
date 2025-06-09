@@ -19,4 +19,4 @@ EXPOSE 5001
 
 # The command to run your application using Gunicorn
 # We use wsgi:app because you have a wsgi.py file
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:5001", "wsgi:app"]
+CMD ["gunicorn", "--workers", "1", "--bind", "0.0.0.0:5001", "wsgi:app"]
